@@ -8,7 +8,6 @@ public class BemVindoController {
     @FXML
     private void irParaLogin() {
         try {
-            // Altera para a tela de login na mesma janela
             GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/login.fxml", "Rafa's Restaurant - Login");
         } catch (IOException e) {
             e.printStackTrace();

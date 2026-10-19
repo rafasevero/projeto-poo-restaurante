@@ -1,5 +1,4 @@
 package com.projeto.restaurante.dao;
-
 import com.projeto.restaurante.model.Produto;
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ public class ProdutoDAO implements IProdutoDAO {
 
     @Override
     public void insere(Produto produto) throws SQLException {
-        // 1. Cria um registro automático na tabela estoque primeiro
         String sqlEstoque = "INSERT INTO estoque (quantidade_atual, quantidade_minima) VALUES (0, 5) RETURNING estoque_id";
         int estoqueId = 0;
 
@@ -21,7 +19,6 @@ public class ProdutoDAO implements IProdutoDAO {
             }
         }
 
-        // 2. Insere o produto usando o estoque_id gerado automaticamente
         String sqlProduto = "INSERT INTO produto (nome, preco, estoque_id) VALUES (?, ?, ?) RETURNING produto_id";
         try (Connection con = Conexao.getConexao();
              PreparedStatement stmtProduto = con.prepareStatement(sqlProduto)) {

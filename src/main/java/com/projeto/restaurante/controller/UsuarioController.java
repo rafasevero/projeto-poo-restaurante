@@ -1,6 +1,4 @@
 package com.projeto.restaurante.controller;
-
-
 import com.projeto.restaurante.model.Usuario;
 import com.projeto.restaurante.dao.UsuarioDAO;
 import javafx.fxml.FXML;

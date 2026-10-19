@@ -1,12 +1,10 @@
 package com.projeto.restaurante.dao;
-
 import com.projeto.restaurante.model.Comanda;
 import java.sql.*;
 
 public class ComandaDAO {
 
     public void salvar(Comanda comanda) throws SQLException {
-        // Usando 'valortotal' exatamente como está no seu banco
         String sql = "INSERT INTO comanda (numero_mesa, status, valortotal) VALUES (?, ?, ?)";
         try (Connection con = Conexao.getConexao();
              PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
