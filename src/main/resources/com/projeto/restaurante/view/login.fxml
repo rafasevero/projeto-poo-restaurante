@@ -26,7 +26,7 @@
                 <HBox spacing="10.0" alignment="CENTER">
                     <children>
                         <Button text="Voltar" onAction="#voltarOnAction" prefWidth="100.0"/>
-                        <Button text="Entrar" onAction="#logarOnAction" defaultButton="true" prefWidth="100.0"/>
+                        <Button text="Entrar" onAction="#entrarOnAction" defaultButton="true" prefWidth="100.0"/>
                     </children>
                 </HBox>
 

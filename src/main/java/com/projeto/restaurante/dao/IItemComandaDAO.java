@@ -1,4 +1,4 @@
 package com.projeto.restaurante.dao;
 
-public interface IEstoqueDAO {
+public interface IItemComandaDAO {
 }

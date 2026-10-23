@@ -9,6 +9,13 @@ public class Usuario {
 
     public Usuario() {}
 
+    public Usuario(String nome, String email, String senha, String perfil) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.perfil = perfil;
+    }
+
     public Usuario(int usuarioId, String nome, String email, String senha, String perfil) {
         this.usuarioId = usuarioId;
         this.nome = nome;
@@ -31,9 +38,4 @@ public class Usuario {
 
     public String getPerfil() { return perfil; }
     public void setPerfil(String perfil) { this.perfil = perfil; }
-
-    @Override
-    public String toString() {
-        return nome + " (" + perfil + ")";
-    }
 }

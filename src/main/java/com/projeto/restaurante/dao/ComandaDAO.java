@@ -1,54 +1,61 @@
 package com.projeto.restaurante.dao;
+
 import com.projeto.restaurante.model.Comanda;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComandaDAO {
 
-    public void salvar(Comanda comanda) throws SQLException {
-        String sql = "INSERT INTO comanda (numero_mesa, status, valortotal) VALUES (?, ?, ?)";
+    public void insere(Comanda comanda) throws SQLException {
+        String sql = "INSERT INTO comanda (numero_mesa, status) VALUES (?, ?) RETURNING comanda_id";
         try (Connection con = Conexao.getConexao();
-             PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, comanda.getNumeroMesa());
             stmt.setString(2, comanda.getStatus());
-            stmt.setDouble(3, comanda.getValorTotal());
-            stmt.executeUpdate();
 
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    comanda.setId(rs.getInt(1));
-                }
-            }
-        }
-    }
-
-    public Comanda buscarPorMesa(int numeroMesa) throws SQLException {
-        String sql = "SELECT * FROM comanda WHERE numero_mesa = ? AND status = 'ABERTA'";
-        try (Connection con = Conexao.getConexao();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, numeroMesa);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Comanda(
-                            rs.getInt("comanda_id"),
-                            rs.getInt("numero_mesa"),
-                            rs.getString("status"),
-                            null,
-                            rs.getDouble("valortotal")
-                    );
+                    comanda.setComandaId(rs.getInt("comanda_id"));
                 }
             }
         }
-        return null;
     }
 
-    public void atualizar(Comanda comanda) throws SQLException {
-        String sql = "UPDATE comanda SET status = ?, valortotal = ? WHERE comanda_id = ?";
+    public void atualiza(Comanda comanda) throws SQLException {
+        String sql = "UPDATE comanda SET numero_mesa = ?, status = ? WHERE comanda_id = ?";
         try (Connection con = Conexao.getConexao();
              PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, comanda.getStatus());
-            stmt.setDouble(2, comanda.getValorTotal());
-            stmt.setInt(3, comanda.getId());
+            stmt.setInt(1, comanda.getNumeroMesa());
+            stmt.setString(2, comanda.getStatus());
+            stmt.setInt(3, comanda.getComandaId());
             stmt.executeUpdate();
         }
+    }
+
+    public void remove(Comanda comanda) throws SQLException {
+        String sql = "DELETE FROM comanda WHERE comanda_id = ?";
+        try (Connection con = Conexao.getConexao();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, comanda.getComandaId());
+            stmt.executeUpdate();
+        }
+    }
+
+    public List<Comanda> listaTodos() throws SQLException {
+        List<Comanda> lista = new ArrayList<>();
+        String sql = "SELECT * FROM comanda";
+        try (Connection con = Conexao.getConexao();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                lista.add(new Comanda(
+                        rs.getInt("comanda_id"),
+                        rs.getInt("numero_mesa"),
+                        rs.getString("status")
+                ));
+            }
+        }
+        return lista;
     }
 }

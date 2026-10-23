@@ -14,7 +14,7 @@ public class GerenciadorTelas {
 
     public static void trocarTela(String fxmlPath, String titulo) throws IOException {
         FXMLLoader loader = new FXMLLoader(GerenciadorTelas.class.getResource(fxmlPath));
-        Scene scene = new Scene(loader.load(), 400, 350);
+        Scene scene = new Scene(loader.load(), 600, 650);
         stage.setTitle(titulo);
         stage.setScene(scene);
         stage.show();

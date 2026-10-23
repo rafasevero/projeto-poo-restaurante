@@ -67,7 +67,19 @@ public class CardapioController {
             ObservableList<String> exibicao = FXCollections.observableArrayList();
 
             for (Cardapio c : listaCardapioBanco) {
-                exibicao.add("[" + c.getNomeSecao() + "] Produto ID: " + c.getProdutoId() + " - " + (c.getDescricao() != null ? c.getDescricao() : ""));
+                // Descobre o nome do produto através do ID associado
+                String nomeProduto = "Produto não encontrado";
+                if (listaProdutosBanco != null) {
+                    for (Produto p : listaProdutosBanco) {
+                        if (p.getProdutoId() == c.getProdutoId()) {
+                            nomeProduto = p.getNome();
+                            break;
+                        }
+                    }
+                }
+
+                String descText = (c.getDescricao() != null && !c.getDescricao().isEmpty()) ? " - " + c.getDescricao() : "";
+                exibicao.add("[" + c.getNomeSecao() + "] " + nomeProduto + descText);
             }
 
             listCardapio.setItems(exibicao);

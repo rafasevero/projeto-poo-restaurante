@@ -1,13 +1,17 @@
 package com.projeto.restaurante.controller;
+
 import com.projeto.restaurante.dao.UsuarioDAO;
 import com.projeto.restaurante.main.GerenciadorTelas;
+import com.projeto.restaurante.model.SessaoUsuario;
 import com.projeto.restaurante.model.Usuario;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 public class LoginController {
 
@@ -18,46 +22,63 @@ public class LoginController {
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     @FXML
-    private void logarOnAction() {
+    private void entrarOnAction() {
         String email = txtEmail.getText().trim();
         String senha = txtSenha.getText().trim();
 
         if (email.isEmpty() || senha.isEmpty()) {
-            lblMensagem.setText("Preencha todos os campos!");
+            exibirErro("Preencha o e-mail e a senha!");
             return;
         }
 
         try {
-            Usuario usuario = usuarioDAO.autenticar(email, senha);
-            if (usuario != null) {
-                lblMensagem.setStyle("-fx-text-fill: #006600;");
-                lblMensagem.setText("Login bem-sucedido!");
+            List<Usuario> usuarios = usuarioDAO.listaTodos();
+            Usuario usuarioAutenticado = null;
 
-                MenuController.setUsuarioLogado(usuario);
-
-                try {
-                    GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/menu_principal.fxml", "Rafa's Restaurant - Menu");
-                } catch (IOException e) {
-                    lblMensagem.setStyle("-fx-text-fill: #cc0000;");
-                    lblMensagem.setText("Erro ao carregar a tela principal: " + e.getMessage());
+            for (Usuario u : usuarios) {
+                if (u.getEmail().equals(email) && u.getSenha().equals(senha)) {
+                    usuarioAutenticado = u;
+                    break;
                 }
-
-            } else {
-                lblMensagem.setStyle("-fx-text-fill: #cc0000;");
-                lblMensagem.setText("E-mail ou senha incorretos.");
             }
+
+            if (usuarioAutenticado != null) {
+                // Salva o perfil na sessão global para controlar os acessos no menu
+                SessaoUsuario.setPerfilLogado(usuarioAutenticado.getPerfil());
+
+                // Vai para o menu principal
+                GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/menu_principal.fxml", "Rafa's Restaurant - Menu Principal");
+            } else {
+                exibirErro("E-mail ou senha incorretos!");
+            }
+
         } catch (SQLException e) {
-            lblMensagem.setStyle("-fx-text-fill: #cc0000;");
-            lblMensagem.setText("Erro ao conectar ao banco: " + e.getMessage());
+            exibirErro("Erro ao conectar ao banco: " + e.getMessage());
+        } catch (IOException e) {
+            exibirErro("Erro ao carregar a tela principal: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void irParaCadastro() {
+        try {
+            GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/usuario.fxml", "Rafa's Restaurant - Cadastro");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void voltarOnAction() {
         try {
-            GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/bem_vindo.fxml", "Rafa's Restaurant - Bem-vindo");
+            GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/bem_vindo.fxml", "Rafa's Restaurant");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void exibirErro(String msg) {
+        lblMensagem.setStyle("-fx-text-fill: #cc0000; -fx-font-weight: bold;");
+        lblMensagem.setText(msg);
     }
 }

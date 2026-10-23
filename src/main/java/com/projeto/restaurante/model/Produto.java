@@ -32,4 +32,9 @@ public class Produto {
 
     public int getEstoqueId() { return estoqueId; }
     public void setEstoqueId(int estoqueId) { this.estoqueId = estoqueId; }
+
+    @Override
+    public String toString() {
+        return nome + " (R$ " + String.format("%.2f", preco) + ")";
+    }
 }

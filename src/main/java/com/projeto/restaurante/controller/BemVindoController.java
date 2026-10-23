@@ -17,7 +17,6 @@ public class BemVindoController {
     @FXML
     private void irParaCadastro() {
         try {
-            // Altera para a tela de cadastro (usuario.fxml) na mesma janela
             GerenciadorTelas.trocarTela("/com/projeto/restaurante/view/usuario.fxml", "Rafa's Restaurant - Cadastro");
         } catch (IOException e) {
             e.printStackTrace();
